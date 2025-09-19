@@ -29,14 +29,6 @@ public class ContactInfo {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
 	@Override
 	public String toString() {
 		return "ContactInfo [email=" + email + ", phoneNumber=" + phoneNumber + ", address=" + address + "]";

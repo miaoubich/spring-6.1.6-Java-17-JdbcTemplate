@@ -1,6 +1,5 @@
-package com.miaoubich.dao.impl;
+package com.miaoubich.repository;
 
-import com.miaoubich.dao.StudentDAO;
 import com.miaoubich.model.Student;
 
 public class StudentDaoImpl implements StudentDAO {

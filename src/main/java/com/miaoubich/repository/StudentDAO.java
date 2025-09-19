@@ -1,4 +1,4 @@
-package com.miaoubich.dao;
+package com.miaoubich.repository;
 
 import com.miaoubich.model.Student;
 

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.miaoubich.bo.StudentBo;
-import com.miaoubich.records.StudentRequest;
-import com.miaoubich.records.StudentResponse;
+import com.miaoubich.dto.StudentRequest;
+import com.miaoubich.dto.StudentResponse;
+import com.miaoubich.service.StudentBo;
 
 @RestController
 @RequestMapping("/students")

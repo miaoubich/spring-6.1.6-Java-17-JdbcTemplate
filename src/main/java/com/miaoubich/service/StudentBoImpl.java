@@ -1,8 +1,7 @@
-package com.miaoubich.bo.impl;
+package com.miaoubich.service;
 
-import com.miaoubich.bo.StudentBo;
-import com.miaoubich.records.StudentRequest;
-import com.miaoubich.records.StudentResponse;
+import com.miaoubich.dto.StudentRequest;
+import com.miaoubich.dto.StudentResponse;
 
 public class StudentBoImpl implements StudentBo {
 
