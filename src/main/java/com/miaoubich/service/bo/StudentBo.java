@@ -1,4 +1,4 @@
-package com.miaoubich.service;
+package com.miaoubich.service.bo;
 
 import com.miaoubich.dto.StudentRequest;
 import com.miaoubich.dto.StudentResponse;

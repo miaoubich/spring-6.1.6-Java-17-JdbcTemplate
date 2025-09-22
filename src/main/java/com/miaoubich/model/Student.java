@@ -18,6 +18,7 @@ public class Student {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
+    public Student() {}
 	public Student(String studentNumber, String firstName, String lastName, LocalDate dateOfBirth, Gender gender,
 			ContactInfo contactInfo, AcademicInfo academicInfo, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
@@ -101,6 +102,7 @@ public class Student {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "Student [id=" + id + ", studentNumber=" + studentNumber + ", firstName=" + firstName + ", lastName="

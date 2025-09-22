@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 public class AcademicInfo {
 
+	private Long id;
 	private LocalDate enrollmentDate;
 	private String program;
 	private String department;
@@ -12,6 +13,7 @@ public class AcademicInfo {
 	private StudentStatus status;
 	private BigDecimal gpa;
 
+	public AcademicInfo() {}
 	public AcademicInfo(LocalDate enrollmentDate, String program, String department, Integer yearLevel,
 			StudentStatus status, BigDecimal gpa) {
 		super();
@@ -23,6 +25,10 @@ public class AcademicInfo {
 		this.gpa = gpa;
 	}
 
+	public Long getId() {
+		return id;
+	}
+	
 	public LocalDate getEnrollmentDate() {
 		return enrollmentDate;
 	}

@@ -2,17 +2,26 @@ package com.miaoubich.model;
 
 public class Address {
 
+	private Long id;
 	private String street;
 	private String city;
-	private String postalCode;
+	private String zipCode;
 	private String country;
 	
+	public Address() {}
 	public Address(String street, String city, String postalCode, String country) {
 		super();
 		this.street = street;
 		this.city = city;
-		this.postalCode = postalCode;
+		this.zipCode = postalCode;
 		this.country = country;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getStreet() {
@@ -31,12 +40,12 @@ public class Address {
 		this.city = city;
 	}
 
-	public String getPostalCode() {
-		return postalCode;
+	public String getZipCode() {
+		return zipCode;
 	}
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
+	public void setZipCode(String postalCode) {
+		this.zipCode = postalCode;
 	}
 
 	public String getCountry() {
@@ -49,7 +58,7 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return "Address [street=" + street + ", city=" + city + ", postalCode=" + postalCode + ", country=" + country
+		return "Address [street=" + street + ", city=" + city + ", zipCode=" + zipCode + ", country=" + country
 				+ "]";
 	}
 	

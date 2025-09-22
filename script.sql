@@ -22,7 +22,7 @@ CREATE TABLE address (
     id BIGSERIAL PRIMARY KEY,
     street VARCHAR(150),
     city VARCHAR(100),
-    postal_code VARCHAR(20),
+    zip_code VARCHAR(20),
     country VARCHAR(100)
 );
 CREATE TABLE academic_info (
@@ -39,4 +39,18 @@ CREATE TABLE academic_info (
     ),
     gpa NUMERIC(3,2)
 );
+
+Select * From student;
+SELECT *FROM address;
+
+ALTER TABLE address
+	RENAME COLUMN postal_code TO zip_code;
+
+
+
+
+
+
+
+
 
