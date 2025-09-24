@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.miaoubich.dto.StudentRequest;
 import com.miaoubich.dto.StudentResponse;
-import com.miaoubich.service.StudentBo;
+import com.miaoubich.service.bo.StudentBo;
 
 @RestController
 @RequestMapping("/students")
@@ -19,6 +19,10 @@ public class StudentController {
 
 	private final Logger logger = LoggerFactory.getLogger(StudentController.class);
 	private StudentBo studentBo;
+	
+	public StudentController(StudentBo studentBo) {
+		this.studentBo = studentBo;
+	}
 	
 	@PostMapping
 	public ResponseEntity<StudentResponse> createStudent(@RequestBody StudentRequest request) {

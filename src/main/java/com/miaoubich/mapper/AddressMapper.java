@@ -9,5 +9,5 @@ import com.miaoubich.model.Address;
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
 	Address toEntity(AddressRequest request);
-	AddressResponse toResponse(Address student);
+	AddressResponse toResponse(Address address);
 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Student {
-
 	private Long id;
     private String studentNumber;
     private String firstName;

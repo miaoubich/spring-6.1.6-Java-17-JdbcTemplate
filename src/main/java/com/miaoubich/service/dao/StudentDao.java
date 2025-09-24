@@ -6,7 +6,7 @@ import com.miaoubich.model.Student;
 
 public interface StudentDao {
 
-	Student saveStudent(Student student);
+	Student saveNewStudent(Student student);
 
 	void saveStudents(List<Student> students);
 }

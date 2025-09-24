@@ -18,6 +18,9 @@ public class ContactInfo {
 	public Long getId() {
 		return id;
 	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getEmail() {
 		return email;
 	}
@@ -42,10 +45,10 @@ public class ContactInfo {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-	
 	@Override
 	public String toString() {
-		return "ContactInfo [email=" + email + ", phoneNumber=" + phoneNumber + ", address=" + address + "]";
+		return "ContactInfo [id=" + id + ", email=" + email + ", phoneNumber=" + phoneNumber + ", address=" + address
+				+ "]";
 	}
 	
 }
