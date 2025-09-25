@@ -8,17 +8,19 @@ public class Address {
 	private String country;
 	
 	public Address() {}
-	public Address(String street, String city, String postalCode, String country) {
+
+	public Address(String street, String city, String zipCode, String country) {
 		super();
 		this.street = street;
 		this.city = city;
-		this.zipCode = postalCode;
+		this.zipCode = zipCode;
 		this.country = country;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -43,8 +45,8 @@ public class Address {
 		return zipCode;
 	}
 
-	public void setZipCode(String postalCode) {
-		this.zipCode = postalCode;
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 
 	public String getCountry() {
@@ -57,8 +59,7 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return "Address [street=" + street + ", city=" + city + ", zipCode=" + zipCode + ", country=" + country
-				+ "]";
+		return "Address [id=" + id + ", street=" + street + ", city=" + city + ", zipCode=" + zipCode + ", country="
+				+ country + "]";
 	}
-	
 }

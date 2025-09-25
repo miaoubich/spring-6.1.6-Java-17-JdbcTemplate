@@ -8,6 +8,7 @@ public class ContactInfo {
 	private Address address;
 	
 	public ContactInfo() {}
+
 	public ContactInfo(String email, String phoneNumber, Address address) {
 		super();
 		this.email = email;
@@ -18,9 +19,11 @@ public class ContactInfo {
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -37,7 +40,6 @@ public class ContactInfo {
 		this.phoneNumber = phoneNumber;
 	}
 
-	
 	public Address getAddress() {
 		return address;
 	}
@@ -45,10 +47,10 @@ public class ContactInfo {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+
 	@Override
 	public String toString() {
 		return "ContactInfo [id=" + id + ", email=" + email + ", phoneNumber=" + phoneNumber + ", address=" + address
 				+ "]";
 	}
-	
 }

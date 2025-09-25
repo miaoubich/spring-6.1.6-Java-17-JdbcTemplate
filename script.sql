@@ -39,12 +39,29 @@ CREATE TABLE academic_info (
     ),
     gpa NUMERIC(3,2)
 );
-
-Select * From student;
-SELECT *FROM address;
-
 ALTER TABLE address
 	RENAME COLUMN postal_code TO zip_code;
+ALTER TABLE academic_info 
+	ADD COLUMN student_id BIGINT UNIQUE;
+ALTER TABLE academic_info
+	ADD CONSTRAINT academic_info_student_id_uk
+	UNIQUE(student_id);
+SELECT *FROM academic_info;
+ALTER TABLE contact_info
+	ADD CONSTRAINT contact_info_email_uk 
+	UNIQUE (email);
+	
+SELECT * From student;
+SELECT *FROM address;
+SELECT * FROM academic_info;
+SELECT * FROM contact_info;
+
+DROP TABLE student;
+DROP TABLE address;
+DROP TABLE contact_info;
+DROP TABLE academic_info;
+
+
 
 
 

@@ -69,7 +69,7 @@ public class StudentDaoImpl implements StudentDao {
 
 		String sql = """
 				INSERT INTO address (street, city, zip_code, country)
-				 VALUES (?, ?, ?, ?, ?)
+				 VALUES (?, ?, ?, ?)
 				 ON CONFLICT DO NOTHING RETURNING id
 				""";
 		Long addressId = jdbcTemplate.query(sql, ps -> {
@@ -128,7 +128,7 @@ public class StudentDaoImpl implements StudentDao {
 		String sql = """
 				INSERT INTO academic_info (enrollment_date, program, department, year_level, status, gpa, student_id)
 				VALUES (?, ?, ?, ?, ?, ?, ?)
-				ON CONFLICT (program, year_level)
+				ON CONFLICT (student_id)
 				DO UPDATE SET
 					status = EXCLUDED.status,
 				    gpa = EXCLUDED.gpa

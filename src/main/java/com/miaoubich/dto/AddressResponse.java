@@ -1,5 +1,5 @@
 package com.miaoubich.dto;
 
-public record AddressResponse(String street, String city, String postalCode, String country) {
+public record AddressResponse(String street, String city, String zipCode, String country) {
 
 }

@@ -13,6 +13,7 @@ public class AcademicInfo {
 	private BigDecimal gpa;
 
 	public AcademicInfo() {}
+
 	public AcademicInfo(LocalDate enrollmentDate, String program, String department, Integer yearLevel,
 			StudentStatus status, BigDecimal gpa) {
 		super();
@@ -27,10 +28,11 @@ public class AcademicInfo {
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public LocalDate getEnrollmentDate() {
 		return enrollmentDate;
 	}
@@ -78,11 +80,11 @@ public class AcademicInfo {
 	public void setGpa(BigDecimal gpa) {
 		this.gpa = gpa;
 	}
+
 	@Override
 	public String toString() {
 		return "AcademicInfo [id=" + id + ", enrollmentDate=" + enrollmentDate + ", program=" + program
 				+ ", department=" + department + ", yearLevel=" + yearLevel + ", status=" + status + ", gpa=" + gpa
 				+ "]";
 	}
-
 }

@@ -18,6 +18,7 @@ public class Student {
     private LocalDateTime updatedAt;
     
     public Student() {}
+
 	public Student(String studentNumber, String firstName, String lastName, LocalDate dateOfBirth, Gender gender,
 			ContactInfo contactInfo, AcademicInfo academicInfo, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
@@ -31,30 +32,45 @@ public class Student {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
-    
+
 	public Long getId() {
 		return id;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getStudentNumber() {
 		return studentNumber;
 	}
+
 	public void setStudentNumber(String studentNumber) {
 		this.studentNumber = studentNumber;
 	}
+
 	public String getFirstName() {
 		return firstName;
 	}
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+
 	public String getLastName() {
 		return lastName;
 	}
+
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
 	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	public Gender getGender() {
@@ -97,16 +113,10 @@ public class Student {
 		this.updatedAt = updatedAt;
 	}
 
-	public void setDateOfBirth(LocalDate dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	
 	@Override
 	public String toString() {
 		return "Student [id=" + id + ", studentNumber=" + studentNumber + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", contactInfo=" + contactInfo
 				+ ", academicInfo=" + academicInfo + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-	
 }
