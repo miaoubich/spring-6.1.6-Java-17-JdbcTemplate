@@ -141,7 +141,7 @@ public class StudentDaoImpl implements StudentDao {
 			ps.setString(2, academicInfo.getProgram());
 			ps.setString(3, academicInfo.getDepartment());
 			ps.setInt(4, academicInfo.getYearLevel());
-			ps.setString(5, academicInfo.getStatus().name());
+			ps.setString(5, academicInfo.getStudentStatus().name());
 			ps.setBigDecimal(6, academicInfo.getGpa());
 			ps.setObject(7, student.getId());
 		}, rs -> rs.next() ? rs.getLong("id") : null);

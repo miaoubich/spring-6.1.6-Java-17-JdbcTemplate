@@ -9,19 +9,19 @@ public class AcademicInfo {
 	private String program;
 	private String department;
 	private Integer yearLevel;
-	private StudentStatus status;
+	private StudentStatus studentStatus;
 	private BigDecimal gpa;
 
 	public AcademicInfo() {}
 
 	public AcademicInfo(LocalDate enrollmentDate, String program, String department, Integer yearLevel,
-			StudentStatus status, BigDecimal gpa) {
+			StudentStatus studentStatus, BigDecimal gpa) {
 		super();
 		this.enrollmentDate = enrollmentDate;
 		this.program = program;
 		this.department = department;
 		this.yearLevel = yearLevel;
-		this.status = status;
+		this.studentStatus = studentStatus;
 		this.gpa = gpa;
 	}
 
@@ -65,12 +65,12 @@ public class AcademicInfo {
 		this.yearLevel = yearLevel;
 	}
 
-	public StudentStatus getStatus() {
-		return status;
+	public StudentStatus getStudentStatus() {
+		return studentStatus;
 	}
 
-	public void setStatus(StudentStatus status) {
-		this.status = status;
+	public void setStudentStatus(StudentStatus status) {
+		this.studentStatus = status;
 	}
 
 	public BigDecimal getGpa() {
@@ -84,7 +84,7 @@ public class AcademicInfo {
 	@Override
 	public String toString() {
 		return "AcademicInfo [id=" + id + ", enrollmentDate=" + enrollmentDate + ", program=" + program
-				+ ", department=" + department + ", yearLevel=" + yearLevel + ", status=" + status + ", gpa=" + gpa
+				+ ", department=" + department + ", yearLevel=" + yearLevel + ", studentStatus=" + studentStatus + ", gpa=" + gpa
 				+ "]";
 	}
 }

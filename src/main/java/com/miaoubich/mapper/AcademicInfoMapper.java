@@ -1,13 +1,14 @@
-//package com.miaoubich.mapper;
-//
-//import org.mapstruct.Mapper;
-//
-//import com.miaoubich.dto.ContactInfoRequest;
-//import com.miaoubich.dto.ContactInfoResponse;
-//import com.miaoubich.model.ContactInfo;
-//
-//@Mapper(componentModel = "spring")
-//public interface AcademicInfoMapper {
-//	ContactInfo toEntity(ContactInfoRequest request);
-//	ContactInfoResponse toResponse(ContactInfo contactInfo);
-//}
+package com.miaoubich.mapper;
+
+import org.mapstruct.Mapper;
+
+import com.miaoubich.dto.AcademicInfoRequest;
+import com.miaoubich.dto.AcademicInfoResponse;
+import com.miaoubich.model.AcademicInfo;
+
+@Mapper(componentModel = "spring")
+public interface AcademicInfoMapper {
+    AcademicInfo toEntity(AcademicInfoRequest request);
+    AcademicInfoResponse toResponse(AcademicInfo academicInfo);
+}
+

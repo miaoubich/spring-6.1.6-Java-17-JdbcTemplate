@@ -19,7 +19,7 @@
         <mockito.version>5.11.0</mockito.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-<!--        <mapstruct.version>1.5.5.Final</mapstruct.version>-->
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
 
     <dependencies>
@@ -159,12 +159,18 @@
             <version>2.5.0</version>
         </dependency>
         
-        <!-- MapStruct API -->
-<!--	    <dependency>-->
-<!--	        <groupId>org.mapstruct</groupId>-->
-<!--	        <artifactId>mapstruct</artifactId>-->
-<!--	        <version>${mapstruct.version}</version>-->
-<!--	    </dependency>-->
+		<!-- MapStruct API -->
+	    <dependency>
+	        <groupId>org.mapstruct</groupId>
+	        <artifactId>mapstruct</artifactId>
+	        <version>${mapstruct.version}</version>
+	    </dependency>
+	    <dependency>
+		    <groupId>org.mapstruct</groupId>
+		    <artifactId>mapstruct-processor</artifactId>
+		    <version>${mapstruct.version}</version>
+		    <scope>provided</scope>
+		</dependency>
 	
         <!-- ===================== TEST DEPENDENCIES ===================== -->
         <!-- JUnit 5 -->

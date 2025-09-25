@@ -1,42 +1,43 @@
 package com.miaoubich.service.bo;
 
-import org.springframework.beans.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.miaoubich.dto.AcademicInfoResponse;
-import com.miaoubich.dto.AddressResponse;
-import com.miaoubich.dto.ContactInfoResponse;
 import com.miaoubich.dto.StudentRequest;
 import com.miaoubich.dto.StudentResponse;
-import com.miaoubich.model.AcademicInfo;
-import com.miaoubich.model.Address;
-import com.miaoubich.model.ContactInfo;
+import com.miaoubich.mapper.StudentMapper;
 import com.miaoubich.model.Student;
 import com.miaoubich.service.dao.StudentDao;
 
 @Service
 public class StudentBoImpl implements StudentBo {
 
+	private static final Logger logger = LoggerFactory.getLogger(StudentBoImpl.class);
 	private StudentDao studentDao;
+	private StudentMapper studentMapper;
 	
-	public StudentBoImpl(StudentDao studentDao) {
+	public StudentBoImpl(StudentDao studentDao, StudentMapper studentMapper) {
 		this.studentDao = studentDao;
+		this.studentMapper= studentMapper; 
 	}
 	
 	@Override
 	public StudentResponse createStudent(StudentRequest request) {
+		logger.info("Creating student: {}", request);
+		
 		StudentResponse response = null;
 		Student student = null;
 		
 		if(request != null) {
 			student = new Student();
-			student = toEntity(request);
+			student = studentMapper.toEntity(request);
 			studentDao.saveNewStudent(student);
-			response = toResponse(student);
+			response = studentMapper.toResponse(student);
 		}		
 		return response;
 	}
-
+/*
 	private Student toEntity(StudentRequest request) {
 		Student student = new Student();
 		Address address = new Address();
@@ -88,7 +89,7 @@ public class StudentBoImpl implements StudentBo {
 	            academicInfo.getProgram(),
 	            academicInfo.getDepartment(),
 	            academicInfo.getYearLevel(),
-	            academicInfo.getStatus(),
+	            academicInfo.getStudentStatus(),
 	            academicInfo.getGpa()
 	        );
 	    }
@@ -106,5 +107,5 @@ public class StudentBoImpl implements StudentBo {
 	        student.getUpdatedAt()
 	    );
 	}
-
+	*/
 }

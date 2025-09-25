@@ -10,7 +10,7 @@ public record AcademicInfoRequest(
 		String program, 
 		String department, 
 		Integer yearLevel,
-		StudentStatus status, 
+		StudentStatus studentStatus, 
 		BigDecimal gpa) {
 
 }
