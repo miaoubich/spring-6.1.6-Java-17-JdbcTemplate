@@ -8,15 +8,19 @@ CREATE TABLE student(
 			gender IN ('MALE', 'FEMALE')
 	),
 	contact_info_id BIGINT REFERENCES contact_info(id),
-    academic_info_id BIGINT REFERENCES academic_info(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    academic_info_id BIGINT UNIQUE REFERENCES academic_info(id)
+   -- created_at TIMESTAMPTZ DEFAULT NOW(),
+   -- updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 CREATE TABLE contact_info (
     id BIGSERIAL PRIMARY KEY,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,   -- enforce uniqueness if each email must be distinct
     phone_number VARCHAR(20),
-    address_id BIGINT REFERENCES address(id)
+    address_id BIGINT NOT NULL,           -- make NOT NULL if every contact must have an address
+    CONSTRAINT fk_contact_address
+        FOREIGN KEY (address_id)
+        REFERENCES address(id)
+        ON DELETE CASCADE                 -- optional: delete contact_info if its address is deleted
 );
 CREATE TABLE address (
     id BIGSERIAL PRIMARY KEY,
@@ -39,22 +43,31 @@ CREATE TABLE academic_info (
     ),
     gpa NUMERIC(3,2)
 );
-ALTER TABLE address
-	RENAME COLUMN postal_code TO zip_code;
-ALTER TABLE academic_info 
-	ADD COLUMN student_id BIGINT UNIQUE;
-ALTER TABLE academic_info
-	ADD CONSTRAINT academic_info_student_id_uk
-	UNIQUE(student_id);
+	
 SELECT *FROM academic_info;
 ALTER TABLE contact_info
 	ADD CONSTRAINT contact_info_email_uk 
 	UNIQUE (email);
+ALTER TABLE student
+  ALTER COLUMN created_at SET DEFAULT now(),
+  ALTER COLUMN updated_at SET DEFAULT now();
+
 	
 SELECT * From student;
-SELECT *FROM address;
+SELECT * FROM address;
 SELECT * FROM academic_info;
 SELECT * FROM contact_info;
+
+SELECT s.student_number, s.first_name, s.last_name, s.date_of_birth,
+       c.email, c.phone_number,
+       ad.street, ad.zip_code, ad.city, ad.country,
+       ac.program, ac.department, ac.year_level, ac.enrollment_date, ac.status, ac.gpa
+FROM student s
+JOIN contact_info c ON s.contact_info_id = c.id
+JOIN address ad ON c.address_id = ad.id
+JOIN academic_info ac ON s.academic_info_id = ac.id
+WHERE s.student_number = 'S2025001';
+
 
 DROP TABLE student;
 DROP TABLE address;

@@ -3,6 +3,8 @@ package com.miaoubich.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class Student {
 	private Long id;
     private String studentNumber;
@@ -14,7 +16,9 @@ public class Student {
     private ContactInfo contactInfo; // Composition
     private AcademicInfo academicInfo; // Composition
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime createdAt;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime updatedAt;
     
     public Student() {}

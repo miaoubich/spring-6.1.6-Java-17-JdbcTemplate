@@ -8,5 +8,7 @@ public interface StudentDao {
 
 	Student saveNewStudent(Student student);
 
-	void saveStudents(List<Student> students);
+	List<Student> saveStudents(List<Student> students);
+
+	Student getStudentByStudentNumber(String studentNumber);
 }

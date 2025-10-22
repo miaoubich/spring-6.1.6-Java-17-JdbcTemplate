@@ -4,10 +4,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -17,6 +19,8 @@ import com.miaoubich.model.AcademicInfo;
 import com.miaoubich.model.Address;
 import com.miaoubich.model.ContactInfo;
 import com.miaoubich.model.Student;
+import com.miaoubich.model.StudentStatus;
+
 
 @Repository
 public class StudentDaoImpl implements StudentDao {
@@ -38,30 +42,44 @@ public class StudentDaoImpl implements StudentDao {
 	}
 
 	private Student saveStudent(Student student) {
-		String sql = """
-				INSERT INTO student (
-				    student_number, first_name, last_name, date_of_birth, gender,
-				    contact_info_id, academic_info_id, created_at, updated_at
-				)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-				ON CONFLICT (student_number)
-				DO UPDATE SET
-				    first_name = EXCLUDED.first_name,
-				    last_name = EXCLUDED.last_name,
-				    date_of_birth = EXCLUDED.date_of_birth,
-				    gender = EXCLUDED.gender,
-				    contact_info_id = EXCLUDED.contact_info_id,
-				    academic_info_id = EXCLUDED.academic_info_id,
-				    updated_at = NOW()
-				""";
-
-		long affectedRows = jdbcTemplate.update(sql, student.getStudentNumber(), student.getFirstName(), student.getLastName(),
-				Date.valueOf(student.getDateOfBirth()), student.getGender().name(), student.getContactInfo().getId(),
-				student.getAcademicInfo().getId(), Timestamp.valueOf(student.getCreatedAt()),
-				Timestamp.valueOf(student.getUpdatedAt()));
-
-		logger.info("Affected rows: " + affectedRows);
-		return student;
+		// created_at, updated_at -> these attribute can be set to NOW() in the DB Table definition
+		// without including them in the insert statement
+		// or set them with timestamps before persisting and include them in the sql statement as follow
+		student.setCreatedAt(LocalDateTime.now());
+	    student.setUpdatedAt(LocalDateTime.now());
+	    
+	    String sql = """
+	            INSERT INTO student (
+	                student_number, first_name, last_name, date_of_birth, gender,
+	                contact_info_id, created_at, updated_at)
+	            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	            ON CONFLICT (student_number)
+	            DO UPDATE SET
+	                first_name = EXCLUDED.first_name,
+	                last_name = EXCLUDED.last_name,
+	                date_of_birth = EXCLUDED.date_of_birth,
+	                gender = EXCLUDED.gender,
+	                contact_info_id = EXCLUDED.contact_info_id,
+	                updated_at = EXCLUDED.updated_at
+	            RETURNING student_id, created_at, updated_at
+	            """;
+		
+	    return jdbcTemplate.queryForObject(sql,
+	            (rs, rowNum) -> {
+	                student.setId(rs.getLong("student_id"));
+	                student.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+	                student.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+	                return student;
+	            },
+	            student.getStudentNumber(),
+	            student.getFirstName(),
+	            student.getLastName(),
+	            Date.valueOf(student.getDateOfBirth()),
+	            student.getGender().name(),
+	            student.getContactInfo().getId(),
+	            Timestamp.valueOf(student.getCreatedAt()),
+	            Timestamp.valueOf(student.getUpdatedAt())
+	        );
 	}
 
 	private void saveAddress(Student student) {
@@ -132,8 +150,6 @@ public class StudentDaoImpl implements StudentDao {
 				DO UPDATE SET
 					status = EXCLUDED.status,
 				    gpa = EXCLUDED.gpa
-				WHERE academic_info.status IS DISTINCT FROM EXCLUDED.status
-				OR academic_info.gpa != EXCLUDED.gpa
 				RETURNING id
 				""";
 		Long academicInfoId = jdbcTemplate.query(sql, ps -> {
@@ -147,9 +163,78 @@ public class StudentDaoImpl implements StudentDao {
 		}, rs -> rs.next() ? rs.getLong("id") : null);
 		academicInfo.setId(academicInfoId);
 	}
+	
+	@Override
+	public Student getStudentByStudentNumber(String studentNumber) {
+		logger.info("Fetching student with student number: " + studentNumber);
+		
+		String sql = """
+					SELECT s.student_id, 
+					       s.student_number, s.first_name, s.last_name, s.date_of_birth,
+					       s.created_at, s.updated_at,
+					       ad.street, ad.zip_code, ad.city, ad.country,
+					       c.email, c.phone_number,
+					       ac.program, ac.department, ac.year_level, ac.enrollment_date, ac.status, ac.gpa
+					FROM student s
+					JOIN contact_info c ON s.contact_info_id = c.id
+					JOIN address ad ON c.address_id = ad.id
+					JOIN academic_info ac ON s.academic_info_id = ac.id
+					WHERE s.student_number = ?
+					""";
+		// Implement the logic to fetch and return the student by student number
+		try {
+			return jdbcTemplate.queryForObject(sql, (rs, rows) -> {
+				// Address
+				Address address = new Address();
+				address.setStreet(rs.getString("street"));
+				address.setZipCode(rs.getString("zip_code"));
+				address.setCity(rs.getString("city"));
+				address.setCountry(rs.getString("country"));
+				logger.info("Address fetched: {}", address);
+				
+				// ContactInfo
+				ContactInfo contactInfo = new ContactInfo();
+				contactInfo.setEmail(rs.getString("email"));
+				contactInfo.setPhoneNumber(rs.getString("phone_number"));
+				
+				// Set Address in ContactInfo
+				contactInfo.setAddress(address);
+				logger.info("ContactInfo fetched: {}", contactInfo);
+				
+				// AcademicInfo
+				AcademicInfo academicInfo = new AcademicInfo();
+				academicInfo.setProgram(rs.getString("program"));
+				academicInfo.setDepartment(rs.getString("department"));
+				academicInfo.setYearLevel(rs.getInt("year_level"));
+				academicInfo.setEnrollmentDate(rs.getDate("enrollment_date").toLocalDate());
+				academicInfo.setStudentStatus(Enum.valueOf(StudentStatus.class, rs.getString("status")));
+				academicInfo.setGpa(rs.getBigDecimal("gpa"));
+				logger.info("AcademicInfo fetched: {}", academicInfo);
+				
+				// Student
+				Student student = new Student();
+				student.setId(rs.getLong("student_id"));
+				student.setStudentNumber(rs.getString("student_number"));
+				student.setFirstName(rs.getString("first_name"));
+				student.setLastName(rs.getString("last_name"));
+				student.setDateOfBirth(rs.getDate("date_of_birth").toLocalDate());
+				student.setContactInfo(contactInfo);
+				student.setAcademicInfo(academicInfo);
+				student.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+				student.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+				logger.info("Student fetched: {}", student);
+				
+				return student;
+			}, studentNumber);
+		} catch (EmptyResultDataAccessException e) {
+			logger.info("No student found with student number: " + studentNumber);
+			return null;
+		}
+	}
+
 
 	@Override
-	public void saveStudents(List<Student> students) {
+	public List<Student> saveStudents(List<Student> students) {
 		String sql = """
 				INSERT INTO student (
 				    student_number, first_name, last_name, date_of_birth, gender,
@@ -187,6 +272,7 @@ public class StudentDaoImpl implements StudentDao {
 				return students.size();
 			}
 		});
+		return students;
 	}
 
 }

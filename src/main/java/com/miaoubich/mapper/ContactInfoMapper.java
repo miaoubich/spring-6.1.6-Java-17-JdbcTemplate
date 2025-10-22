@@ -1,16 +1,16 @@
 package com.miaoubich.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
 import com.miaoubich.dto.ContactInfoRequest;
 import com.miaoubich.dto.ContactInfoResponse;
 import com.miaoubich.model.ContactInfo;
 
-@Mapper(componentModel = "spring", uses = AddressMapper.class)
-public interface ContactInfoMapper {
-	@Mapping(source = "addressRequest", target = "address")
-    ContactInfo toEntity(ContactInfoRequest request);
-    ContactInfoResponse toResponse(ContactInfo contactInfo);
-}
+public class ContactInfoMapper {
 
+	public static ContactInfo toEntity(ContactInfoRequest request) {
+		return StudentMapper.mapper.map(request, ContactInfo.class);
+	}
+
+	public static ContactInfoResponse toResponse(ContactInfo contactInfo) {
+		return StudentMapper.mapper.map(contactInfo, ContactInfoResponse.class);
+	}
+}

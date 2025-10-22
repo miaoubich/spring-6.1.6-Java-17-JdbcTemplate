@@ -159,7 +159,7 @@
             <version>2.5.0</version>
         </dependency>
         
-		<!-- MapStruct API -->
+		<!-- MapStruct API 
 	    <dependency>
 	        <groupId>org.mapstruct</groupId>
 	        <artifactId>mapstruct</artifactId>
@@ -171,7 +171,15 @@
 		    <version>${mapstruct.version}</version>
 		    <scope>provided</scope>
 		</dependency>
-	
+		-->
+		
+		<!-- ModelMapper -->
+		<dependency>
+		    <groupId>org.modelmapper</groupId>
+		    <artifactId>modelmapper</artifactId>
+		    <version>3.2.5</version>
+		</dependency>
+		
         <!-- ===================== TEST DEPENDENCIES ===================== -->
         <!-- JUnit 5 -->
         <dependency>
@@ -227,13 +235,13 @@
 			    <configuration>
 			        <source>${java.version}</source>
 			        <target>${java.version}</target>
-<!--			        <annotationProcessorPaths>-->
-<!--			            <path>-->
-<!--			                <groupId>org.mapstruct</groupId>-->
-<!--			                <artifactId>mapstruct-processor</artifactId>-->
-<!--			                <version>${mapstruct.version}</version>-->
-<!--			            </path>-->
-<!--			        </annotationProcessorPaths>-->
+			        <annotationProcessorPaths>
+			            <path>
+			                <groupId>org.mapstruct</groupId>
+			                <artifactId>mapstruct-processor</artifactId>
+			                <version>${mapstruct.version}</version>
+			            </path>
+			        </annotationProcessorPaths>
 			        <compilerArgs>
 			            <arg>-parameters</arg>
 			        </compilerArgs>
