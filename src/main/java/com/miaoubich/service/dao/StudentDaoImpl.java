@@ -6,13 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -78,14 +77,62 @@ public class StudentDaoImpl implements StudentDao {
 	        );
 	}
 
-	private void saveAddress(Student student) {
+	private void saveAddress1(Student student) {
 		Address address = student.getContactInfo().getAddress();
 
 		String sql = """
-				INSERT INTO address (street, city, zip_code, country)
-				 VALUES (?, ?, ?, ?)
-				 ON CONFLICT DO NOTHING RETURNING id
-				""";
+        INSERT INTO address (street, city, zip_code, country)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT (street, city, zip_code, country)
+        DO UPDATE SET street = EXCLUDED.street
+        RETURNING id
+        """;
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+
+		jdbcTemplate.update(connection -> {
+			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, address.getStreet());
+			ps.setString(2, address.getCity());
+			ps.setString(3, address.getZipCode());
+			ps.setString(4, address.getCountry());
+			return ps;
+		}, keyHolder);
+
+		// Extract the returned ID (PostgreSQL returns it in the key holder’s map)
+		Number key = (keyHolder.getKey() != null)
+				? keyHolder.getKey()
+				: (Number) keyHolder.getKeys().get("id");
+
+		if (key == null) {
+			// fallback select in the rare case the update didn't return
+			String selectSql = """
+									SELECT id FROM address
+										WHERE street = ? 
+										  AND city = ? 
+										  AND zip_code = ? 
+										  AND country = ?
+									""";
+			key = jdbcTemplate.queryForObject(
+					selectSql,
+					Long.class,
+					address.getStreet(),
+					address.getCity(),
+					address.getZipCode(),
+					address.getCountry()
+			);
+		}
+		address.setId(key.longValue());
+	}
+
+	private void saveAddress(Student student) {
+		Address address = student.getContactInfo().getAddress();
+
+		String sql =
+				"INSERT INTO address (street, city, zip_code, country) " +
+						"VALUES (?, ?, ?, ?) " +
+						"ON CONFLICT (street, city, zip_code, country) " +
+						"DO UPDATE SET street = EXCLUDED.street " +
+						"RETURNING id";
 		Long addressId = jdbcTemplate.query(sql, ps -> {
 			ps.setString(1, address.getStreet());
 			ps.setString(2, address.getCity());
@@ -95,14 +142,21 @@ public class StudentDaoImpl implements StudentDao {
 
 		if (addressId == null) {
 			// Fallback: fetch existing address ID
-			String selectSql = """
-					SELECT id FROM address
-					WHERE street = ? AND city = ? AND zip_code = ? AND country = ?
-					""";
-			addressId = jdbcTemplate.queryForObject(selectSql, Long.class, address.getStreet(), address.getCity(),
-					address.getZipCode(), address.getCountry());
+			String selectSql =
+								"SELECT id FROM address " +
+								"WHERE street = ? " +
+								"AND city = ? " +
+								"AND zip_code = ? " +
+								"AND country = ? ";
+			addressId = jdbcTemplate.queryForObject(
+					selectSql,
+					Long.class,
+					address.getStreet(),
+					address.getCity(),
+					address.getZipCode(),
+					address.getCountry()
+			);
 		}
-
 		address.setId(addressId);
 	}
 
