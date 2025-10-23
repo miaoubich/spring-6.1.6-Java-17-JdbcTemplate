@@ -95,6 +95,11 @@
             <version>${logging.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.6</version>
+        </dependency>
 
         <!-- Servlet/JSP API -->
         <dependency>
@@ -179,7 +184,13 @@
 		    <artifactId>modelmapper</artifactId>
 		    <version>3.2.5</version>
 		</dependency>
-		
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper-module-record</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
         <!-- ===================== TEST DEPENDENCIES ===================== -->
         <!-- JUnit 5 -->
         <dependency>
@@ -228,25 +239,25 @@
 
     <build>
         <plugins>
+            <!-- Maven Compiler Plugin -->
             <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-compiler-plugin</artifactId>
-			    <version>3.13.0</version>
-			    <configuration>
-			        <source>${java.version}</source>
-			        <target>${java.version}</target>
-			        <annotationProcessorPaths>
-			            <path>
-			                <groupId>org.mapstruct</groupId>
-			                <artifactId>mapstruct-processor</artifactId>
-			                <version>${mapstruct.version}</version>
-			            </path>
-			        </annotationProcessorPaths>
-			        <compilerArgs>
-			            <arg>-parameters</arg>
-			        </compilerArgs>
-			    </configuration>
-			</plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <!-- Maven WAR Plugin: add this -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version> <!-- Use a modern version -->
+            </plugin>
         </plugins>
     </build>
 </project>

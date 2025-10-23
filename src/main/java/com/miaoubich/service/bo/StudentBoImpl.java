@@ -1,25 +1,27 @@
 package com.miaoubich.service.bo;
 
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import com.miaoubich.dto.StudentRequest;
-import com.miaoubich.dto.StudentResponse;
-import com.miaoubich.mapper.StudentMapper;
+import com.miaoubich.dto.*;
+import com.miaoubich.model.AcademicInfo;
+import com.miaoubich.model.Address;
+import com.miaoubich.model.ContactInfo;
 import com.miaoubich.model.Student;
 import com.miaoubich.service.dao.StudentDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
 public class StudentBoImpl implements StudentBo {
 
 	private static final Logger logger = LoggerFactory.getLogger(StudentBoImpl.class);
-	private StudentDao studentDao;
+	private final StudentDao studentDao;
 	
 	public StudentBoImpl(StudentDao studentDao) {
+
 		this.studentDao = studentDao;
 	}
 	
@@ -32,9 +34,9 @@ public class StudentBoImpl implements StudentBo {
 		
 		if(request != null) {
 			student = new Student();
-			student = StudentMapper.toEntity(request);
+			student = toEntity(request);
 			studentDao.saveNewStudent(student);
-			response = StudentMapper.toResponse(student);
+			response = toResponse(student);
 		}		
 		return response;
 	}
@@ -49,10 +51,9 @@ public class StudentBoImpl implements StudentBo {
 	        logger.warn("No student found with student number: {}", studentNumber);
 	        return Optional.empty();
 	    }
-	    return Optional.of(StudentMapper.toResponse(student));
+	    return Optional.of(toResponse(student));
 	}
 
-/*
 	private Student toEntity(StudentRequest request) {
 		Student student = new Student();
 		Address address = new Address();
@@ -62,11 +63,11 @@ public class StudentBoImpl implements StudentBo {
 		BeanUtils.copyProperties(request.contactInfoRequest().addressRequest(), address);
 		BeanUtils.copyProperties(request.contactInfoRequest(), contactInfo);
 		BeanUtils.copyProperties(request.academicInfoRequest(), academicInfo);
-		
+
+		BeanUtils.copyProperties(request, student);
 		contactInfo.setAddress(address);
 		student.setContactInfo(contactInfo);
 		student.setAcademicInfo(academicInfo);
-		BeanUtils.copyProperties(request, student);
 		
 		return student;
 	}
@@ -122,5 +123,4 @@ public class StudentBoImpl implements StudentBo {
 	        student.getUpdatedAt()
 	    );
 	}
-	*/
 }

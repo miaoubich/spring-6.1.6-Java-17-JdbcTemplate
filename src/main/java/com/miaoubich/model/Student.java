@@ -1,15 +1,17 @@
 package com.miaoubich.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class Student {
 	private Long id;
     private String studentNumber;
     private String firstName;
     private String lastName;
+	@JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     private Gender gender;
 
@@ -17,8 +19,10 @@ public class Student {
     private AcademicInfo academicInfo; // Composition
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
     public Student() {}

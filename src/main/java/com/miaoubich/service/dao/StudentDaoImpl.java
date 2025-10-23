@@ -1,12 +1,6 @@
 package com.miaoubich.service.dao;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.miaoubich.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,11 +9,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.miaoubich.model.AcademicInfo;
-import com.miaoubich.model.Address;
-import com.miaoubich.model.ContactInfo;
-import com.miaoubich.model.Student;
-import com.miaoubich.model.StudentStatus;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Repository
@@ -37,8 +32,9 @@ public class StudentDaoImpl implements StudentDao {
 	public Student saveNewStudent(Student student) {
 		saveAddress(student);
 		saveContactInfo(student);
+		Student savedStudent = saveStudent(student);
 		saveAcademicInfo(student);
-		return saveStudent(student);
+		return savedStudent;
 	}
 
 	private Student saveStudent(Student student) {
@@ -101,7 +97,7 @@ public class StudentDaoImpl implements StudentDao {
 			// Fallback: fetch existing address ID
 			String selectSql = """
 					SELECT id FROM address
-					WHERE street = ? AND city = ? AND postal_code = ? AND country = ?
+					WHERE street = ? AND city = ? AND zip_code = ? AND country = ?
 					""";
 			addressId = jdbcTemplate.queryForObject(selectSql, Long.class, address.getStreet(), address.getCity(),
 					address.getZipCode(), address.getCountry());
@@ -142,7 +138,7 @@ public class StudentDaoImpl implements StudentDao {
 
 	private void saveAcademicInfo(Student student) {
 		AcademicInfo academicInfo = student.getAcademicInfo();
-		
+
 		String sql = """
 				INSERT INTO academic_info (enrollment_date, program, department, year_level, status, gpa, student_id)
 				VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -152,16 +148,19 @@ public class StudentDaoImpl implements StudentDao {
 				    gpa = EXCLUDED.gpa
 				RETURNING id
 				""";
-		Long academicInfoId = jdbcTemplate.query(sql, ps -> {
-			ps.setDate(1, Date.valueOf(academicInfo.getEnrollmentDate()));
-			ps.setString(2, academicInfo.getProgram());
-			ps.setString(3, academicInfo.getDepartment());
-			ps.setInt(4, academicInfo.getYearLevel());
-			ps.setString(5, academicInfo.getStudentStatus().name());
-			ps.setBigDecimal(6, academicInfo.getGpa());
-			ps.setObject(7, student.getId());
-		}, rs -> rs.next() ? rs.getLong("id") : null);
-		academicInfo.setId(academicInfoId);
+		Long academicInfoId = jdbcTemplate.queryForObject(
+				sql,
+				new Object[]{
+						Date.valueOf(academicInfo.getEnrollmentDate()),
+						academicInfo.getProgram(),
+						academicInfo.getDepartment(),
+						academicInfo.getYearLevel(),
+						academicInfo.getStudentStatus().name(),
+						academicInfo.getGpa(),
+						student.getId()
+				},
+				(rs, rowNum) -> rs.getLong("id")
+		);
 	}
 	
 	@Override
@@ -178,7 +177,7 @@ public class StudentDaoImpl implements StudentDao {
 					FROM student s
 					JOIN contact_info c ON s.contact_info_id = c.id
 					JOIN address ad ON c.address_id = ad.id
-					JOIN academic_info ac ON s.academic_info_id = ac.id
+					JOIN academic_info ac ON s.student_id = ac.student_id
 					WHERE s.student_number = ?
 					""";
 		// Implement the logic to fetch and return the student by student number
@@ -274,5 +273,4 @@ public class StudentDaoImpl implements StudentDao {
 		});
 		return students;
 	}
-
 }

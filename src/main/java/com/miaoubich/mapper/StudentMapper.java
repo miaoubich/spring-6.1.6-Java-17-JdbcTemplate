@@ -1,30 +1,68 @@
+/*
 package com.miaoubich.mapper;
 
+import com.miaoubich.dto.*;
+import com.miaoubich.model.*;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import org.modelmapper.record.RecordModule;
+import org.springframework.stereotype.Component;
 
-import com.miaoubich.dto.ContactInfoRequest;
-import com.miaoubich.dto.StudentRequest;
-import com.miaoubich.dto.StudentResponse;
-import com.miaoubich.model.ContactInfo;
-import com.miaoubich.model.Student;
-
+@Component
 public class StudentMapper {
-	static final ModelMapper mapper;
-	static {
+
+	private final ModelMapper mapper;
+
+	public StudentMapper() {
 		mapper = new ModelMapper();
-		mapper.typeMap(StudentRequest.class, Student.class)
-				.addMappings(m -> m.map(StudentRequest::contactInfoRequest, Student::setContactInfo));
-		mapper.typeMap(ContactInfoRequest.class, ContactInfo.class)
-				.addMappings(m -> m.map(ContactInfoRequest::addressRequest, ContactInfo::setAddress));
-		mapper.typeMap(StudentRequest.class, Student.class)
-				.addMappings(m -> m.map(StudentRequest::academicInfoRequest, Student::setAcademicInfo));
+		mapper.registerModule(new RecordModule());
+
+		// Enable deeper automatic matching
+		mapper.getConfiguration()
+				.setFieldMatchingEnabled(true)
+				.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+				.setPropertyCondition(Conditions.isNotNull());
+
+		// Guarantee nested destination objects exist before mapping
+		TypeMap<StudentRequest, Student> studentTypeMap = mapper.createTypeMap(StudentRequest.class, Student.class);
+		studentTypeMap.setPreConverter(ctx -> {
+			Student dest = ctx.getDestination();
+			if (dest.getContactInfo() == null) dest.setContactInfo(new ContactInfo());
+			if (dest.getAcademicInfo() == null) dest.setAcademicInfo(new AcademicInfo());
+			return dest;
+		});
+
+		TypeMap<Student, StudentResponse> typeMap =
+				mapper.createTypeMap(Student.class, StudentResponse.class);
+		typeMap.addMapping(Student::getContactInfo, StudentResponse::setContactInfoResponse);
+		typeMap.addMapping(Student::getAcademicInfo, StudentResponse::setAcademicInfoResponse);
+
+
+		// Optional nested mapping for ContactInfo → Address
+		TypeMap<ContactInfoRequest, ContactInfo> contactInfoTypeMap =
+				mapper.createTypeMap(ContactInfoRequest.class, ContactInfo.class);
+		contactInfoTypeMap.setPreConverter(ctx -> {
+			ContactInfo dest = ctx.getDestination();
+			if (dest.getAddress() == null) dest.setAddress(new Address());
+			return dest;
+		});
+
+		TypeMap<ContactInfo, ContactInfoResponse> contactInfoResponsetypeMap =
+				mapper.createTypeMap(ContactInfo.class, ContactInfoResponse.class);
+		contactInfoResponsetypeMap.setPreConverter(ctx -> {
+			ContactInfoResponse dest = ctx.getDestination();
+			if(dest.getAddressResponse() == null) dest.setAddressResponse(new AddressResponse());
+			return dest;
+		});
 	}
 
-	public static Student toEntity(StudentRequest request) {
+	public Student toEntity(StudentRequest request) {
 		return mapper.map(request, Student.class);
 	}
 
-	public static StudentResponse toResponse(Student student) {
+	public StudentResponse toResponse(Student student) {
 		return mapper.map(student, StudentResponse.class);
 	}
 }
+*/

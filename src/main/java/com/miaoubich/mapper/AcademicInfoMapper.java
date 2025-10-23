@@ -1,16 +1,21 @@
+/*
 package com.miaoubich.mapper;
 
 import com.miaoubich.dto.AcademicInfoRequest;
 import com.miaoubich.dto.AcademicInfoResponse;
 import com.miaoubich.model.AcademicInfo;
+import org.modelmapper.ModelMapper;
 
 public class AcademicInfoMapper {
 
-	public static AcademicInfo toEntity(AcademicInfoRequest request) {
-		return StudentMapper.mapper.map(request, AcademicInfo.class);
-	}
+    private final ModelMapper mapper = new ModelMapper();
 
-	public static AcademicInfoResponse toResponse(AcademicInfo academicInfo) {
-		return StudentMapper.mapper.map(academicInfo, AcademicInfoResponse.class);
-	}
+    public AcademicInfo toEntity(AcademicInfoRequest request) {
+        return mapper.map(request, AcademicInfo.class);
+    }
+
+    public AcademicInfoResponse toResponse(AcademicInfo academicInfo) {
+        return mapper.map(academicInfo, AcademicInfoResponse.class);
+    }
 }
+*/

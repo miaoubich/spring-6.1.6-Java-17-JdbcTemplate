@@ -1,9 +1,64 @@
 package com.miaoubich.dto;
 
-public record AddressResponse(
-		String street, 
-		String city, 
-		String zipCode, 
-		String country) {
+public class AddressResponse {
 
+	private String street;
+	private String city;
+	private String zipCode;
+	private String country;
+
+	// No-argument constructor needed for ModelMapper
+	public AddressResponse() {}
+
+	// All-argument constructor (optional for convenience)
+	public AddressResponse(String street, String city, String zipCode, String country) {
+		this.street = street;
+		this.city = city;
+		this.zipCode = zipCode;
+		this.country = country;
+	}
+
+	// Getters and Setters
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	// toString for logging and debugging
+	@Override
+	public String toString() {
+		return "AddressResponse{" +
+				"street='" + street + '\'' +
+				", city='" + city + '\'' +
+				", zipCode='" + zipCode + '\'' +
+				", country='" + country + '\'' +
+				'}';
+	}
 }
