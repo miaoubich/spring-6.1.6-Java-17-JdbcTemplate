@@ -2,6 +2,7 @@ package com.miaoubich.controller;
 
 import com.miaoubich.dto.StudentRequest;
 import com.miaoubich.dto.StudentResponse;
+import com.miaoubich.model.StudentStatus;
 import com.miaoubich.service.bo.StudentBo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,5 +33,11 @@ public class StudentController {
 	public ResponseEntity<StudentResponse> getStudentByStudentNumber(@PathVariable String studentNumber) {
 	    Optional<StudentResponse> student = studentBo.findStudentByStudentNumber(studentNumber);
 	    return (student.isEmpty()) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build(): ResponseEntity.ok(student.get());
+	}
+
+	@PatchMapping("/{studentNumber}")
+	public ResponseEntity<StudentResponse> updateStudentStatus(@PathVariable String studentNumber, @RequestParam String status) {
+	    StudentResponse updated = studentBo.updateStudentStatus(studentNumber, Enum.valueOf(StudentStatus.class, status.toUpperCase()));
+	    return ResponseEntity.ok(updated);
 	}
 }

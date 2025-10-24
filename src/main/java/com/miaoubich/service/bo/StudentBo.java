@@ -1,13 +1,16 @@
 package com.miaoubich.service.bo;
 
-import java.util.Optional;
-
 import com.miaoubich.dto.StudentRequest;
 import com.miaoubich.dto.StudentResponse;
+import com.miaoubich.model.StudentStatus;
+
+import java.util.Optional;
 
 public interface StudentBo {
 
 	StudentResponse createStudent(StudentRequest request);
 
 	Optional<StudentResponse> findStudentByStudentNumber(String studentNumber);
+
+    StudentResponse updateStudentStatus(String studentNumber, StudentStatus studentStatus);
 }

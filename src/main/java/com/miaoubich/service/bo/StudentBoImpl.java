@@ -1,14 +1,13 @@
 package com.miaoubich.service.bo;
 
 import com.miaoubich.dto.*;
-import com.miaoubich.model.AcademicInfo;
-import com.miaoubich.model.Address;
-import com.miaoubich.model.ContactInfo;
-import com.miaoubich.model.Student;
+import com.miaoubich.exception.StudentNotFoundException;
+import com.miaoubich.model.*;
 import com.miaoubich.service.dao.StudentDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -52,6 +51,16 @@ public class StudentBoImpl implements StudentBo {
 	        return Optional.empty();
 	    }
 	    return Optional.of(toResponse(student));
+	}
+
+	@Override
+	public StudentResponse updateStudentStatus(String studentNumber, StudentStatus studentStatus) {
+		logger.info("Updating status of the student with student-number: {}", studentNumber);
+		Student student = studentDao.updateStudentByStudentStatus(studentNumber, studentStatus);
+		if (student == null)
+			throw new StudentNotFoundException("Student with number " + studentNumber +
+					" not found. Status update to " + studentStatus + " aborted.", HttpStatus.NOT_FOUND);;
+		return toResponse(student);
 	}
 
 	private Student toEntity(StudentRequest request) {

@@ -1,8 +1,5 @@
 package com.miaoubich.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -10,6 +7,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,6 +33,11 @@ public class GlobalExceptionHandler {
                               .map(ObjectError::getDefaultMessage)
                               .toList());
         return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ResponseEntity<String> handleStudentNotFound(StudentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }
 
