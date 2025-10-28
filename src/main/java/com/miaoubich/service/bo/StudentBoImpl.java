@@ -126,6 +126,7 @@ public class StudentBoImpl implements StudentBo {
 	        student.getFirstName(),
 	        student.getLastName(),
 	        student.getDateOfBirth(),
+			student.getGender(),
 	        contactInfoResponse,
 	        academicInfoResponse,
 	        student.getCreatedAt(),

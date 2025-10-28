@@ -1,5 +1,7 @@
 package com.miaoubich.dto;
 
+import com.miaoubich.model.Gender;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -10,6 +12,7 @@ public class StudentResponse {
 	private String firstName;
 	private String lastName;
 	private LocalDate dateOfBirth;
+	private Gender gender;
 	private ContactInfoResponse contactInfoResponse;
 	private AcademicInfoResponse academicInfoResponse;
 	private LocalDateTime createdAt;
@@ -20,7 +23,7 @@ public class StudentResponse {
 
 	// All‑arguments constructor (optional, convenient for manual creation)
 	public StudentResponse(Long id, String studentNumber, String firstName, String lastName,
-						   LocalDate dateOfBirth, ContactInfoResponse contactInfoResponse,
+						   LocalDate dateOfBirth, Gender gender, ContactInfoResponse contactInfoResponse,
 						   AcademicInfoResponse academicInfoResponse, LocalDateTime createdAt,
 						   LocalDateTime updatedAt) {
 		this.id = id;
@@ -28,6 +31,7 @@ public class StudentResponse {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.dateOfBirth = dateOfBirth;
+		this.gender = gender;
 		this.contactInfoResponse = contactInfoResponse;
 		this.academicInfoResponse = academicInfoResponse;
 		this.createdAt = createdAt;
@@ -75,6 +79,10 @@ public class StudentResponse {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public Gender getGender() { return gender;}
+
+	public void setGender(Gender gender) { this.gender = gender;}
+
 	public ContactInfoResponse getContactInfoResponse() {
 		return contactInfoResponse;
 	}
@@ -115,6 +123,7 @@ public class StudentResponse {
 				", firstName='" + firstName + '\'' +
 				", lastName='" + lastName + '\'' +
 				", dateOfBirth=" + dateOfBirth +
+				", gender" + gender +
 				", contactInfoResponse=" + contactInfoResponse +
 				", academicInfoResponse=" + academicInfoResponse +
 				", createdAt=" + createdAt +

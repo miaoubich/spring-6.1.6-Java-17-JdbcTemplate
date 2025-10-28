@@ -32,7 +32,7 @@ public class StudentController {
 	@GetMapping("/{studentNumber}")
 	public ResponseEntity<StudentResponse> getStudentByStudentNumber(@PathVariable String studentNumber) {
 	    Optional<StudentResponse> student = studentBo.findStudentByStudentNumber(studentNumber);
-	    return (student.isEmpty()) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build(): ResponseEntity.ok(student.get());
+	    return (student.isEmpty()) ? ResponseEntity.status(HttpStatus.NOT_FOUND).build(): ResponseEntity.status(HttpStatus.FOUND).body(student.get());
 	}
 
 	@PatchMapping("/{studentNumber}")
