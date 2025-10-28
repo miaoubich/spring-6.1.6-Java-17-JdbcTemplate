@@ -131,4 +131,34 @@ public class StudentControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Update Student Status - Success") //updateStudentStatus(@PathVariable String studentNumber, @RequestParam String status)
+    void updateStudentStatus_ReturnsOk() throws Exception {
+        AddressResponse addressResponse = new AddressResponse("S2025002", "City", "12345", "Country");
+        ContactInfoResponse contactInfoResponse = new ContactInfoResponse("test@email.com", "1234567890", addressResponse);
+        AcademicInfoResponse academicInfoResponse = new AcademicInfoResponse(
+                LocalDate.of(2022, 9, 1), "Computer Science", "Engineering", 3, StudentStatus.ADMITTED, new BigDecimal("3.8")
+        );
+        StudentResponse response = new StudentResponse(
+                1L, // id
+                "S2025002", // studentNumber
+                "ALi", // firstName
+                "Bouzar", // lastName
+                LocalDate.of(2000, 10, 28), // dateOfBirth
+                Gender.MALE,
+                contactInfoResponse, // contactInfoResponse
+                academicInfoResponse, // academicInfoResponse
+                LocalDateTime.of(2024, 10, 25, 10, 0, 0), // createdAt
+                LocalDateTime.of(2024, 10, 25, 10, 0, 0) // updatedAt
+        );
+        Mockito.when(studentBo.updateStudentStatus("S2025002", StudentStatus.ADMITTED)).thenReturn(response);
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/students/{studentNumber}?status={status}", "S2025002", "ENROLLED")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.studentNumber").value("S2025002"))
+                .andExpect(jsonPath("$.firstName").value("ALi"))
+                .andExpect(jsonPath("$.lastName").value("Bouzar"))
+                .andExpect(jsonPath("$.academicInfoResponse.studentStatus").value("ADMITTED"));
+    }
 }
