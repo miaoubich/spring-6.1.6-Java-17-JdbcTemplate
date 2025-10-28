@@ -1,10 +1,10 @@
 package com.miaoubich.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.miaoubich.model.Gender;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record StudentRequest(
 		String studentNumber, 
