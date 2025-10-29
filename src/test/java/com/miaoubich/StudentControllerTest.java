@@ -69,7 +69,7 @@ public class StudentControllerTest {
         response.setFirstName("Ali");
         response.setLastName("Bouzar");
 
-        Mockito.when(studentBo.createStudent(any(StudentRequest.class))).thenReturn(response);
+        Mockito.when(studentBo.upsertStudent(any(StudentRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/students")
                         .contentType(MediaType.APPLICATION_JSON)

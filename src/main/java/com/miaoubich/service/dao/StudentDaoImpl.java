@@ -38,7 +38,8 @@ public class StudentDaoImpl implements StudentDao {
 
     private Student saveStudent(Student student) {
         // created_at, updated_at -> these attribute can be set to NOW() in the DB Table definition
-        // without including them in the insert statement
+        // without including them in the inse
+        // rt statement
         // or set them with timestamps before persisting and include them in the sql statement as follow
         student.setCreatedAt(LocalDateTime.now());
         student.setUpdatedAt(LocalDateTime.now());
@@ -123,17 +124,22 @@ public class StudentDaoImpl implements StudentDao {
         }
         address.setId(key.longValue());
     }
-
     private void saveAddress(Student student) {
         Address address = student.getContactInfo().getAddress();
 
-        String sql =
-                "INSERT INTO address (street, city, zip_code, country) " +
-                        "VALUES (?, ?, ?, ?) " +
-                        "ON CONFLICT (street, city, zip_code, country) " +
-                        "DO UPDATE SET street = EXCLUDED.street " +
-                        "RETURNING id";
-        Long addressId = jdbcTemplate.query(sql, ps -> {
+        String sql = """
+                       INSERT INTO address (street, city, zip_code, country) 
+                            VALUES (?, ?, ?, ?) 
+                            ON CONFLICT (street, city, zip_code, country) 
+                            DO UPDATE SET 
+                            street = EXCLUDED.street, 
+                            city = EXCLUDED.city,
+                            zip_code = EXCLUDED.zip_code,
+                            country = EXCLUDED.country
+                            RETURNING id
+                        """;
+        Long addressId = jdbcTemplate.query(sql,
+                ps -> {
             ps.setString(1, address.getStreet());
             ps.setString(2, address.getCity());
             ps.setString(3, address.getZipCode());
@@ -167,6 +173,7 @@ public class StudentDaoImpl implements StudentDao {
                 VALUES (?, ?, ?)
                 ON CONFLICT (email)
                 DO UPDATE SET
+                    email = EXCLUDED.email,
                     phone_number = EXCLUDED.phone_number,
                     address_id = EXCLUDED.address_id
                 RETURNING id
@@ -198,6 +205,10 @@ public class StudentDaoImpl implements StudentDao {
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT (student_id)
                 DO UPDATE SET
+                    enrollment_date = EXCLUDED.enrollment_date,
+                    program = EXCLUDED.program,
+                    department = EXCLUDED.department,
+                    year_level = EXCLUDED.year_level,
                 	status = EXCLUDED.status,
                     gpa = EXCLUDED.gpa
                 RETURNING id

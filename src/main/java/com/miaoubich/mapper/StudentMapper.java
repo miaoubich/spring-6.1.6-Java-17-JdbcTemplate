@@ -1,68 +1,81 @@
-/*
 package com.miaoubich.mapper;
 
 import com.miaoubich.dto.*;
-import com.miaoubich.model.*;
-import org.modelmapper.Conditions;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.modelmapper.record.RecordModule;
-import org.springframework.stereotype.Component;
+import com.miaoubich.model.AcademicInfo;
+import com.miaoubich.model.Address;
+import com.miaoubich.model.ContactInfo;
+import com.miaoubich.model.Student;
+import org.springframework.beans.BeanUtils;
 
-@Component
 public class StudentMapper {
 
-	private final ModelMapper mapper;
+    public static Student toEntity(StudentRequest request) {
+        if (request == null) return null;
 
-	public StudentMapper() {
-		mapper = new ModelMapper();
-		mapper.registerModule(new RecordModule());
+        Student student = new Student();
+        Address address = new Address();
+        ContactInfo contactInfo = new ContactInfo();
+        AcademicInfo academicInfo = new AcademicInfo();
 
-		// Enable deeper automatic matching
-		mapper.getConfiguration()
-				.setFieldMatchingEnabled(true)
-				.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
-				.setPropertyCondition(Conditions.isNotNull());
+        BeanUtils.copyProperties(request.contactInfoRequest().addressRequest(), address);
+        BeanUtils.copyProperties(request.contactInfoRequest(), contactInfo);
+        BeanUtils.copyProperties(request.academicInfoRequest(), academicInfo);
+        BeanUtils.copyProperties(request, student);
 
-		// Guarantee nested destination objects exist before mapping
-		TypeMap<StudentRequest, Student> studentTypeMap = mapper.createTypeMap(StudentRequest.class, Student.class);
-		studentTypeMap.setPreConverter(ctx -> {
-			Student dest = ctx.getDestination();
-			if (dest.getContactInfo() == null) dest.setContactInfo(new ContactInfo());
-			if (dest.getAcademicInfo() == null) dest.setAcademicInfo(new AcademicInfo());
-			return dest;
-		});
+        contactInfo.setAddress(address);
+        student.setContactInfo(contactInfo);
+        student.setAcademicInfo(academicInfo);
+        return student;
+    }
 
-		TypeMap<Student, StudentResponse> typeMap =
-				mapper.createTypeMap(Student.class, StudentResponse.class);
-		typeMap.addMapping(Student::getContactInfo, StudentResponse::setContactInfoResponse);
-		typeMap.addMapping(Student::getAcademicInfo, StudentResponse::setAcademicInfoResponse);
+    public static StudentResponse toResponse(Student student) {
+        if (student == null) return null;
 
+        AddressResponse addressResponse = null;
+        if (student.getContactInfo() != null && student.getContactInfo().getAddress() != null) {
+            Address address = student.getContactInfo().getAddress();
+            addressResponse = new AddressResponse(
+                    address.getStreet(),
+                    address.getCity(),
+                    address.getZipCode(),
+                    address.getCountry()
+            );
+        }
 
-		// Optional nested mapping for ContactInfo → Address
-		TypeMap<ContactInfoRequest, ContactInfo> contactInfoTypeMap =
-				mapper.createTypeMap(ContactInfoRequest.class, ContactInfo.class);
-		contactInfoTypeMap.setPreConverter(ctx -> {
-			ContactInfo dest = ctx.getDestination();
-			if (dest.getAddress() == null) dest.setAddress(new Address());
-			return dest;
-		});
+        ContactInfoResponse contactInfoResponse = null;
+        if (student.getContactInfo() != null) {
+            ContactInfo contactInfo = student.getContactInfo();
+            contactInfoResponse = new ContactInfoResponse(
+                    contactInfo.getEmail(),
+                    contactInfo.getPhoneNumber(),
+                    addressResponse
+            );
+        }
 
-		TypeMap<ContactInfo, ContactInfoResponse> contactInfoResponsetypeMap =
-				mapper.createTypeMap(ContactInfo.class, ContactInfoResponse.class);
-		contactInfoResponsetypeMap.setPreConverter(ctx -> {
-			ContactInfoResponse dest = ctx.getDestination();
-			if(dest.getAddressResponse() == null) dest.setAddressResponse(new AddressResponse());
-			return dest;
-		});
-	}
+        AcademicInfoResponse academicInfoResponse = null;
+        if (student.getAcademicInfo() != null) {
+            AcademicInfo academicInfo = student.getAcademicInfo();
+            academicInfoResponse = new AcademicInfoResponse(
+                    academicInfo.getEnrollmentDate(),
+                    academicInfo.getProgram(),
+                    academicInfo.getDepartment(),
+                    academicInfo.getYearLevel(),
+                    academicInfo.getStudentStatus(),
+                    academicInfo.getGpa()
+            );
+        }
 
-	public Student toEntity(StudentRequest request) {
-		return mapper.map(request, Student.class);
-	}
-
-	public StudentResponse toResponse(Student student) {
-		return mapper.map(student, StudentResponse.class);
-	}
+        return new StudentResponse(
+                student.getId(),
+                student.getStudentNumber(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getDateOfBirth(),
+                student.getGender(),
+                contactInfoResponse,
+                academicInfoResponse,
+                student.getCreatedAt(),
+                student.getUpdatedAt()
+        );
+    }
 }
-*/

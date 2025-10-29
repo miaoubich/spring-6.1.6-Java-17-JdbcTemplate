@@ -1,12 +1,14 @@
 package com.miaoubich.service.bo;
 
-import com.miaoubich.dto.*;
+import com.miaoubich.dto.StudentRequest;
+import com.miaoubich.dto.StudentResponse;
 import com.miaoubich.exception.StudentNotFoundException;
-import com.miaoubich.model.*;
+import com.miaoubich.mapper.StudentMapper;
+import com.miaoubich.model.Student;
+import com.miaoubich.model.StudentStatus;
 import com.miaoubich.service.dao.StudentDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ public class StudentBoImpl implements StudentBo {
 	}
 	
 	@Override
-	public StudentResponse createStudent(StudentRequest request) {
+	public StudentResponse upsertStudent(StudentRequest request) {
 		logger.info("Creating student: {}", request);
 		
 		StudentResponse response = null;
@@ -33,9 +35,9 @@ public class StudentBoImpl implements StudentBo {
 		
 		if(request != null) {
 			student = new Student();
-			student = toEntity(request);
+			student = StudentMapper.toEntity(request);
 			studentDao.saveNewStudent(student);
-			response = toResponse(student);
+			response = StudentMapper.toResponse(student);
 		}		
 		return response;
 	}
@@ -50,7 +52,7 @@ public class StudentBoImpl implements StudentBo {
 	        logger.warn("No student found with student number: {}", studentNumber);
 	        return Optional.empty();
 	    }
-	    return Optional.of(toResponse(student));
+	    return Optional.of(StudentMapper.toResponse(student));
 	}
 
 	@Override
@@ -60,9 +62,10 @@ public class StudentBoImpl implements StudentBo {
 		if (student == null)
 			throw new StudentNotFoundException("Student with number " + studentNumber +
 					" not found. Status update to " + studentStatus + " aborted.", HttpStatus.NOT_FOUND);;
-		return toResponse(student);
+		return StudentMapper.toResponse(student);
 	}
 
+/*
 	private Student toEntity(StudentRequest request) {
 		Student student = new Student();
 		Address address = new Address();
@@ -118,7 +121,6 @@ public class StudentBoImpl implements StudentBo {
 	            academicInfo.getGpa()
 	        );
 	    }
-
 	    // Now call the canonical record constructor in the right order
 	    return new StudentResponse(
 	        student.getId(),
@@ -132,5 +134,5 @@ public class StudentBoImpl implements StudentBo {
 	        student.getCreatedAt(),
 	        student.getUpdatedAt()
 	    );
-	}
+	} */
 }

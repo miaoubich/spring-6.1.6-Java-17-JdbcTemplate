@@ -8,9 +8,10 @@ import java.util.Optional;
 
 public interface StudentBo {
 
-	StudentResponse createStudent(StudentRequest request);
+	StudentResponse upsertStudent(StudentRequest request);
 
 	Optional<StudentResponse> findStudentByStudentNumber(String studentNumber);
 
     StudentResponse updateStudentStatus(String studentNumber, StudentStatus studentStatus);
+
 }

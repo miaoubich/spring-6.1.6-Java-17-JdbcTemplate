@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/students")
+@RequestMapping("/students")
 public class StudentController {
 
 	private final Logger logger = LoggerFactory.getLogger(StudentController.class);
@@ -25,7 +25,7 @@ public class StudentController {
 	
 	@PostMapping
 	public ResponseEntity<StudentResponse> createStudent(@RequestBody StudentRequest request) {
-	    StudentResponse saved = studentBo.createStudent(request);
+	    StudentResponse saved = studentBo.upsertStudent(request);
 	    return ResponseEntity.status(HttpStatus.CREATED).body(saved);
 	}
 
@@ -39,5 +39,11 @@ public class StudentController {
 	public ResponseEntity<StudentResponse> updateStudentStatus(@PathVariable String studentNumber, @RequestParam String status) {
 	    StudentResponse updated = studentBo.updateStudentStatus(studentNumber, Enum.valueOf(StudentStatus.class, status.toUpperCase()));
 	    return ResponseEntity.ok(updated);
+	}
+
+	@PutMapping
+	public ResponseEntity<StudentResponse> updateStudent(@RequestBody StudentRequest request) {
+		StudentResponse saved = studentBo.upsertStudent(request);
+		return ResponseEntity.status(HttpStatus.OK).body(saved);
 	}
 }
