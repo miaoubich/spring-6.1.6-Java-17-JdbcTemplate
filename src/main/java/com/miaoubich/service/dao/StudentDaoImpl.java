@@ -21,7 +21,7 @@ public class StudentDaoImpl implements StudentDao {
 
     private final static Logger logger = LoggerFactory.getLogger(StudentDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
-
+    private static final StudentRowMapper STUDENT_ROW_MAPPER = new StudentRowMapper();
     public StudentDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -230,6 +230,35 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public Student getStudentByStudentNumber(String studentNumber) {
+        logger.info("Fetching student with student number: " + studentNumber);
+
+        String sql = """
+                SELECT s.student_id, 
+                       s.student_number, 
+                       s.first_name, 
+                       s.last_name, 
+                       s.date_of_birth, 
+                       s.gender,
+                       s.created_at, s.updated_at,
+                       ad.street, ad.zip_code, ad.city, ad.country,
+                       c.email, c.phone_number,
+                       ac.program, ac.department, ac.year_level, 
+                       ac.enrollment_date, ac.status, ac.gpa
+                FROM student s
+                JOIN contact_info c ON s.contact_info_id = c.id
+                JOIN address ad ON c.address_id = ad.id
+                JOIN academic_info ac ON s.student_id = ac.student_id
+                WHERE s.student_number = ?
+                """;
+
+        try {
+            return jdbcTemplate.queryForObject(sql, STUDENT_ROW_MAPPER, studentNumber);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("No student found with student number: " + studentNumber);
+            return null;
+        }
+    }
+    public Student getStudentByStudentNumber1(String studentNumber) {
         logger.info("Fetching student with student number: " + studentNumber);
 
         String sql = """

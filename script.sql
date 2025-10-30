@@ -9,6 +9,9 @@ CREATE TABLE address
     country  VARCHAR(100)
 );
 
+ALTER TABLE address
+    ADD CONSTRAINT unique_address UNIQUE (street, city, zip_code, country);
+
 CREATE TABLE contact_info
 (
     id           BIGSERIAL PRIMARY KEY,
