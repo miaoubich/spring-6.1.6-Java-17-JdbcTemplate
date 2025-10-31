@@ -4,6 +4,7 @@ import com.miaoubich.dto.StudentRequest;
 import com.miaoubich.dto.StudentResponse;
 import com.miaoubich.model.StudentStatus;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface StudentBo {
@@ -14,4 +15,5 @@ public interface StudentBo {
 
     StudentResponse updateStudentStatus(String studentNumber, StudentStatus studentStatus);
 
+    List<StudentResponse> getAllStudents();
 }

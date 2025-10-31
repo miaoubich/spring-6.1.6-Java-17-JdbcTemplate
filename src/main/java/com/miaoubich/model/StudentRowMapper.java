@@ -36,6 +36,7 @@ public class StudentRowMapper implements RowMapper<Student> {
         academicInfo.setGpa(rs.getBigDecimal("gpa"));
 
         Student student = new Student();
+        student.setId(rs.getLong("student_id"));
         student.setStudentNumber(rs.getString("student_number"));
         student.setFirstName(rs.getString("first_name"));
         student.setLastName(rs.getString("last_name"));
@@ -54,7 +55,6 @@ public class StudentRowMapper implements RowMapper<Student> {
         if(updatedAt != null) {
             student.setCreatedAt(updatedAt.toLocalDateTime());
         }
-
         return student;
     }
 }

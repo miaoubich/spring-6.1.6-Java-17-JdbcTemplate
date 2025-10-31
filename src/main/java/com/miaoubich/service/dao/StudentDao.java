@@ -11,6 +11,8 @@ public interface StudentDao {
 
     Student updateStudentByStudentStatus(String studentNumber, StudentStatus newStatus);
 
+    List<Student> getAllStudents();
+
     List<Student> saveStudents(List<Student> students);
 
 	Student getStudentByStudentNumber(String studentNumber);

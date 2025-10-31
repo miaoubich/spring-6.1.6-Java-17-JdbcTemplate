@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -65,74 +66,11 @@ public class StudentBoImpl implements StudentBo {
 		return StudentMapper.toResponse(student);
 	}
 
-/*
-	private Student toEntity(StudentRequest request) {
-		Student student = new Student();
-		Address address = new Address();
-		ContactInfo contactInfo = new ContactInfo();
-		AcademicInfo academicInfo = new AcademicInfo();
-		
-		BeanUtils.copyProperties(request.contactInfoRequest().addressRequest(), address);
-		BeanUtils.copyProperties(request.contactInfoRequest(), contactInfo);
-		BeanUtils.copyProperties(request.academicInfoRequest(), academicInfo);
-
-		BeanUtils.copyProperties(request, student);
-		contactInfo.setAddress(address);
-		student.setContactInfo(contactInfo);
-		student.setAcademicInfo(academicInfo);
-		
-		return student;
+	@Override
+	public List<StudentResponse> getAllStudents() {
+		logger.info("Fetching all students");
+		List<Student> students = studentDao.getAllStudents();
+		return students.stream().map(StudentMapper::toResponse).toList();
 	}
-	
-	private StudentResponse toResponse(Student student) {
-	    if (student == null) return null;
 
-	    // Build nested responses
-	    AddressResponse addressResponse = null;
-	    if (student.getContactInfo() != null && student.getContactInfo().getAddress() != null) {
-	        Address address = student.getContactInfo().getAddress();
-	        addressResponse = new AddressResponse(
-	            address.getStreet(),
-	            address.getCity(),
-	            address.getZipCode(),
-	            address.getCountry()
-	        );
-	    }
-
-	    ContactInfoResponse contactInfoResponse = null;
-	    if (student.getContactInfo() != null) {
-	        ContactInfo contactInfo = student.getContactInfo();
-	        contactInfoResponse = new ContactInfoResponse(
-	            contactInfo.getEmail(),
-	            contactInfo.getPhoneNumber(),
-	            addressResponse
-	        );
-	    }
-
-	    AcademicInfoResponse academicInfoResponse = null;
-	    if (student.getAcademicInfo() != null) {
-	        AcademicInfo academicInfo = student.getAcademicInfo();
-	        academicInfoResponse = new AcademicInfoResponse(
-	            academicInfo.getEnrollmentDate(),
-	            academicInfo.getProgram(),
-	            academicInfo.getDepartment(),
-	            academicInfo.getYearLevel(),
-	            academicInfo.getStudentStatus(),
-	            academicInfo.getGpa()
-	        );
-	    }
-	    // Now call the canonical record constructor in the right order
-	    return new StudentResponse(
-	        student.getId(),
-	        student.getStudentNumber(),
-	        student.getFirstName(),
-	        student.getLastName(),
-	        student.getDateOfBirth(),
-			student.getGender(),
-	        contactInfoResponse,
-	        academicInfoResponse,
-	        student.getCreatedAt(),
-	        student.getUpdatedAt()
-	    );
-	} */
 }

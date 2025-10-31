@@ -258,72 +258,6 @@ public class StudentDaoImpl implements StudentDao {
             return null;
         }
     }
-    public Student getStudentByStudentNumber1(String studentNumber) {
-        logger.info("Fetching student with student number: " + studentNumber);
-
-        String sql = """
-                SELECT s.student_id, 
-                       s.student_number, s.first_name, s.last_name, s.date_of_birth,
-                       s.created_at, s.updated_at,
-                       ad.street, ad.zip_code, ad.city, ad.country,
-                       c.email, c.phone_number,
-                       ac.program, ac.department, ac.year_level, ac.enrollment_date, ac.status, ac.gpa
-                FROM student s
-                JOIN contact_info c ON s.contact_info_id = c.id
-                JOIN address ad ON c.address_id = ad.id
-                JOIN academic_info ac ON s.student_id = ac.student_id
-                WHERE s.student_number = ?
-                """;
-        // Implement the logic to fetch and return the student by student number
-        try {
-            return jdbcTemplate.queryForObject(sql, (rs, rows) -> {
-                // Address
-                Address address = new Address();
-                address.setStreet(rs.getString("street"));
-                address.setZipCode(rs.getString("zip_code"));
-                address.setCity(rs.getString("city"));
-                address.setCountry(rs.getString("country"));
-                logger.info("Address fetched: {}", address);
-
-                // ContactInfo
-                ContactInfo contactInfo = new ContactInfo();
-                contactInfo.setEmail(rs.getString("email"));
-                contactInfo.setPhoneNumber(rs.getString("phone_number"));
-
-                // Set Address in ContactInfo
-                contactInfo.setAddress(address);
-                logger.info("ContactInfo fetched: {}", contactInfo);
-
-                // AcademicInfo
-                AcademicInfo academicInfo = new AcademicInfo();
-                academicInfo.setProgram(rs.getString("program"));
-                academicInfo.setDepartment(rs.getString("department"));
-                academicInfo.setYearLevel(rs.getInt("year_level"));
-                academicInfo.setEnrollmentDate(rs.getDate("enrollment_date").toLocalDate());
-                academicInfo.setStudentStatus(Enum.valueOf(StudentStatus.class, rs.getString("status")));
-                academicInfo.setGpa(rs.getBigDecimal("gpa"));
-                logger.info("AcademicInfo fetched: {}", academicInfo);
-
-                // Student
-                Student student = new Student();
-                student.setId(rs.getLong("student_id"));
-                student.setStudentNumber(rs.getString("student_number"));
-                student.setFirstName(rs.getString("first_name"));
-                student.setLastName(rs.getString("last_name"));
-                student.setDateOfBirth(rs.getDate("date_of_birth").toLocalDate());
-                student.setContactInfo(contactInfo);
-                student.setAcademicInfo(academicInfo);
-                student.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-                student.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
-                logger.info("Student fetched: {}", student);
-
-                return student;
-            }, studentNumber);
-        } catch (EmptyResultDataAccessException e) {
-            logger.info("No student found with student number: " + studentNumber);
-            return null;
-        }
-    }
 
     @Override
     public Student updateStudentByStudentStatus(String studentNumber, StudentStatus newStatus) {
@@ -346,6 +280,33 @@ public class StudentDaoImpl implements StudentDao {
             return getStudentByStudentNumber(studentNumber);
         } else {
             logger.warn("No student found with student number: " + studentNumber);
+            return null;
+        }
+    }
+
+
+    public List<Student> getAllStudents(){
+        String sql = """
+                SELECT s.student_id, 
+                       s.student_number, 
+                       s.first_name, 
+                       s.last_name, 
+                       s.date_of_birth,
+                       s.gender,
+                       s.created_at, s.updated_at,
+                       ad.street, ad.zip_code, ad.city, ad.country,
+                       c.email, c.phone_number,
+                       ac.program, ac.department, ac.year_level, 
+                       ac.enrollment_date, ac.status, ac.gpa
+                FROM student s
+                JOIN contact_info c ON s.contact_info_id = c.id
+                JOIN address ad ON c.address_id = ad.id
+                JOIN academic_info ac ON s.student_id = ac.student_id
+                """;
+        try {
+            return jdbcTemplate.query(sql, STUDENT_ROW_MAPPER);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("No student found!");
             return null;
         }
     }

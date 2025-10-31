@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,5 +46,11 @@ public class StudentController {
 	public ResponseEntity<StudentResponse> updateStudent(@RequestBody StudentRequest request) {
 		StudentResponse saved = studentBo.upsertStudent(request);
 		return ResponseEntity.status(HttpStatus.OK).body(saved);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<StudentResponse>> getAllStudents() {
+	    List<StudentResponse> students = studentBo.getAllStudents();
+	    return ResponseEntity.ok(students);
 	}
 }
