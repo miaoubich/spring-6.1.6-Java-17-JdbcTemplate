@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: sm-system
+  jackson.serialization.WRITE_DATES_AS_TIMESTAMPS: false
+
+#to generate new key run 'openssl rand -base64 32' in git bash
+jwt:
+  secret:
+    key: your_generated_base64_key_here
+
+
+

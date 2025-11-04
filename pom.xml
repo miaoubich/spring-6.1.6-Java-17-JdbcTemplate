@@ -20,6 +20,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <jjwt.version>0.12.3</jjwt.version>
     </properties>
 
     <dependencies>
@@ -191,7 +192,7 @@
         </dependency>
     -->
 
-        <!-- Start Spring security
+        <!-- Start Spring security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
@@ -207,7 +208,27 @@
             <artifactId>spring-security-core</artifactId>
             <version>6.1.6</version>
         </dependency>
-         End Spring security -->
+         <!-- End Spring security -->
+
+        <!-- JJWT Library for JWT handling -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- End JJWT Library for JWT handling -->
 
         <!-- ===================== TEST DEPENDENCIES ===================== -->
         <!-- JUnit 5 -->
@@ -261,6 +282,26 @@
 <!--        </dependency>-->
 
     </dependencies>
+
+    <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 
     <build>
         <plugins>

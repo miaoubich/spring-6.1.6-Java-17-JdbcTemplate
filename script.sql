@@ -58,8 +58,12 @@ CREATE TABLE student
     updated_at       TIMESTAMP DEFAULT NOW()
 );
 
-
-
+CREATE TABLE user_ (
+                       id BIGSERIAL PRIMARY KEY,
+                       username_ VARCHAR(150),
+                       password_ VARCHAR(150),
+                       role_ VARCHAR(20)
+);
 
 /*
 SELECT *FROM academic_info;
