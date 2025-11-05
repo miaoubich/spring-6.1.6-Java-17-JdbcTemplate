@@ -1,7 +1,9 @@
 package com.miaoubich.repository;
 
 import com.miaoubich.model.Student;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class StudentDaoImpl implements StudentDAO {
 
 	@Override

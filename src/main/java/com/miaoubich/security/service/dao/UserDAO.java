@@ -1,9 +1,9 @@
-package com.miaoubich.security.service.login.dao;
+package com.miaoubich.security.service.dao;
 
 import com.miaoubich.security.model.User;
 
 import java.util.Optional;
 
-public interface LoginDAO {
+public interface UserDAO {
     Optional<User> findByUsername(String username);
 }

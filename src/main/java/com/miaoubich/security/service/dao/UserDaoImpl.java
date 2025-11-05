@@ -1,4 +1,4 @@
-package com.miaoubich.security.service.login.dao;
+package com.miaoubich.security.service.dao;
 
 import com.miaoubich.security.model.Role;
 import com.miaoubich.security.model.User;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class LoginDaoImpl implements LoginDAO {
+public class UserDaoImpl implements UserDAO {
 
-    private final static Logger logger = LoggerFactory.getLogger(LoginDaoImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
 
-    public LoginDaoImpl(JdbcTemplate jdbcTemplate) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
