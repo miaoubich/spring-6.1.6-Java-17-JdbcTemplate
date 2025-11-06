@@ -3,11 +3,10 @@ spring:
     name: sm-system
   jackson.serialization.WRITE_DATES_AS_TIMESTAMPS: false
 
-# To generate new key browse https://generate-random.org/encryption-keys
-# or run 'openssl rand -base64 32' in git bash
+# run 'openssl rand -base64 32' in git bash
 jwt:
   secret:
-    key: 7a23448f271a17835285035e3cb585e884cc99adfa1da884a9fe89b86a73cbe8
+    key: TBNJcHIfrjhS7dCALeQIiKg5gWTCZT7SjomGqWz5NRE=
 
 
 

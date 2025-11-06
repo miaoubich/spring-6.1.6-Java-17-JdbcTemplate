@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.annotation.PostConstruct;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +16,34 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret.key}")
-    private String secretKey;
+//    @Value("${jwt.secret.key}")
+    private String secretKey = System.getenv().getOrDefault( "JWT_SECRET_OVERRIDE",
+                                                                                    "TBNJcHIfrjhS7dCALeQIiKg5gWTCZT7SjomGqWz5NRE=");
+
+    private SecretKey signingKey;
+
+    @PostConstruct
+    void initSigningKey() {
+        if (secretKey == null || secretKey.isBlank()) {
+            throw new IllegalStateException("Missing jwt.secret.key");
+        }
+        byte[] keyBytes;
+        String trimmed = secretKey.trim();
+        try {
+            keyBytes = Decoders.BASE64.decode(trimmed);
+        } catch (io.jsonwebtoken.io.DecodingException ex) {
+            // Fallback to raw bytes if not Base64
+            keyBytes = trimmed.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        }
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException("Secret key too short (need ≥ 32 bytes for HS256).");
+        }
+        signingKey = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private SecretKey getSigningKey() {
+        return signingKey;
+    }
 
     public String extractUsername(String jwtToken) {
         return extractClaim(jwtToken, Claims::getSubject);
@@ -39,10 +65,10 @@ public class JwtService {
     }
 
     // user jjwt 0.12.3 not 0.11.x with Key
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+//    private SecretKey getSigningKey() {
+//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+//        return Keys.hmacShaKeyFor(keyBytes);
+//    }
 
     // Generate token from username of userDetails
     public String generateToken(UserDetails userDetails) {
@@ -60,7 +86,7 @@ public class JwtService {
                         .compact();
     }
 
-    public boolean isValidateToken(String jwtToken, UserDetails userDetails) {
+    public boolean isValidToken(String jwtToken, UserDetails userDetails) {
         final String username = extractUsername(jwtToken);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(jwtToken);
     }
@@ -73,3 +99,4 @@ public class JwtService {
         return extractClaim(jwtToken, Claims::getExpiration);
     }
 }
+

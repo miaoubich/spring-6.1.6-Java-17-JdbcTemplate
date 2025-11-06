@@ -227,7 +227,7 @@ public class StudentDaoImpl implements StudentDao {
                 (rs, rowNum) -> rs.getLong("id")
         );
     }
-
+// int result = jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getRole().name());
     @Override
     public Student getStudentByStudentNumber(String studentNumber) {
         logger.info("Fetching student with student number: " + studentNumber);

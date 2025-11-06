@@ -32,4 +32,21 @@ public class UserDaoImpl implements UserDAO {
         });
         return (user != null)? Optional.of(user): Optional.empty();
     }
+
+    @Override
+    public void saveUser(User user) {
+        String sql = "INSERT INTO user_ (username_, password_, role_) VALUES (?, ?, ?)";
+
+        var args = new Object[] {
+            user.getUsername(),
+            user.getPassword(),
+            user.getRole().name()
+        };
+        int result = jdbcTemplate.update(sql, args);
+        if (result > 0) {
+            logger.info("A new user has been inserted.");
+        } else {
+            logger.error("Failed to insert the user.");
+        }
+    }
 }
