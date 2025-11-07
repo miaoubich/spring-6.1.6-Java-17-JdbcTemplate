@@ -1,10 +1,13 @@
 package com.miaoubich.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class AcademicInfo {
 	private Long id;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate enrollmentDate;
 	private String program;
 	private String department;
