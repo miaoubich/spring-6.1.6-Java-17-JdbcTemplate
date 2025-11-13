@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface Address {
     street: string;
@@ -24,7 +24,7 @@ interface AcademicInfo {
 }
 
 interface Student {
-    id: number; // omitted from display
+    id: number;
     studentNumber: string;
     firstName: string;
     lastName: string;
@@ -38,15 +38,32 @@ interface Student {
 
 export const StudentsList: React.FC = () => {
     const { state } = useLocation();
+    const navigate = useNavigate();
     const students: Student[] = state?.studentsData || [];
 
+    const logout = () => {
+        localStorage.removeItem('authToken');
+        navigate('/login');
+    };
+
     if (!students.length) {
-        return <p style={{ padding: '2rem' }}>No students data available.</p>;
+        return (
+            <div style={{ padding: '2rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h2>Students List</h2>
+                    <button onClick={logout} style={logoutBtn}>Logout</button>
+                </div>
+                <p>No students data available.</p>
+            </div>
+        );
     }
 
     return (
         <div style={{ padding: '2rem' }}>
-            <h2>Students List</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <h2 style={{ margin: 0 }}>Students List</h2>
+                <button onClick={logout} style={logoutBtn}>Logout</button>
+            </div>
             <div style={{ overflowX: 'auto' }}>
                 <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.9rem' }}>
                     <thead>
@@ -79,9 +96,7 @@ export const StudentsList: React.FC = () => {
                                 <td style={td}>{s.contactInfoResponse?.email}</td>
                                 <td style={td}>{s.contactInfoResponse?.phoneNumber}</td>
                                 <td style={td}>
-                                    {addr
-                                        ? `${addr.street}, ${addr.city} ${addr.zipCode}, ${addr.country}`
-                                        : ''}
+                                    {addr ? `${addr.street}, ${addr.city} ${addr.zipCode}, ${addr.country}` : ''}
                                 </td>
                                 <td style={td}>{acad?.program}</td>
                                 <td style={td}>{acad?.department}</td>
@@ -99,15 +114,25 @@ export const StudentsList: React.FC = () => {
     );
 };
 
-// simple shared cell styles
 const th: React.CSSProperties = {
     padding: '8px 10px',
     border: '1px solid #ccc',
     textAlign: 'left',
     whiteSpace: 'nowrap'
 };
+
 const td: React.CSSProperties = {
     padding: '6px 10px',
     border: '1px solid #ddd',
     verticalAlign: 'top'
+};
+
+const logoutBtn: React.CSSProperties = {
+    background: '#c62828',
+    color: '#fff',
+    border: 'none',
+    padding: '6px 14px',
+    borderRadius: 4,
+    cursor: 'pointer',
+    fontSize: '0.85rem'
 };
