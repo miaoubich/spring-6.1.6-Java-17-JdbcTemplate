@@ -1,0 +1,20 @@
+Suggested enhancements:
+- Add refresh tokens, password reset (email OTP), and account lockout after repeated failures.
+- Implement RBAC with fine-grained permissions (method-level security).
+- Add request rate limiting (Bucket4j) and audit logging (who changed what, when).
+- Introduce soft deletes and data versioning (history tables with triggers).
+- Provide advanced student search (full-text, filters, pagination, sorting).
+- Add CSV/Excel export and bulk import with validation report.
+- Integrate caching (Caffeine) for lookups and metrics (Micrometer + Prometheus/Grafana).
+- Provide OpenAPI/Swagger docs and a Postman collection generator.
+- Add centralized exception model with error codes and correlation IDs.
+- Implement domain events (Spring ApplicationEventPublisher) for async email notifications.
+- Schedule tasks (e.g. nightly GPA recalculation, inactive student cleanup).
+- Add multi-tenancy (schema per tenant or discriminator column) if future scaling required.
+- Include integration tests with Testcontainers (PostgreSQL) and mutation testing (Pitest).
+- Add health checks, readiness/liveness probes, and structured JSON logging.
+- Implement encryption at rest for sensitive columns (e.g. phone) and secrets management (Vault).
+- Add feature flags (Togglz) to roll out new modules safely.
+- Provide a small admin UI or Angular/React dashboard consuming the REST API.
+- Implement notification channels (email/websocket) for status changes.
+- Add GDPR-style data export and anonymization tool.
