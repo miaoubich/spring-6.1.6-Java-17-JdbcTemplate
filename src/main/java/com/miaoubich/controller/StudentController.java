@@ -7,6 +7,7 @@ import com.miaoubich.service.bo.StudentBo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/students")
+@RequestMapping(path = "/students", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudentController {
 
 	private final Logger logger = LoggerFactory.getLogger(StudentController.class);
