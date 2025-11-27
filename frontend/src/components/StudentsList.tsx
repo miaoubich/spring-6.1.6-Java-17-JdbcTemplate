@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { fetchStudents } from '@api/students';
 
 interface Address {
     street: string;
@@ -62,8 +63,26 @@ export const StudentsList: React.FC = () => {
         <div style={{ padding: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <h2 style={{ margin: 0 }}>Students List</h2>
-                <button onClick={logout} style={logoutBtn}>Logout</button>
+                <div>
+                    <button
+                        onClick={() => navigate('/add-student')}
+                        style={{
+                            background: '#1976d2',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '6px 14px',
+                            borderRadius: 4,
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            marginRight: '10px'
+                        }}
+                    >
+                        Add Student
+                    </button>
+                    <button onClick={logout} style={logoutBtn}>Logout</button>
+                </div>
             </div>
+
             <div style={{ overflowX: 'auto' }}>
                 <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.9rem' }}>
                     <thead>

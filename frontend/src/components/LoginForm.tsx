@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../src/api/auth';
-import styles from './StyleForm.module.css';
+import { login } from '../api/auth';
+import styles from './LoginLogup.module.css';
 
 export const LoginForm: React.FC = () => {
     const [form, setForm] = React.useState({ username: '', password: '' });
