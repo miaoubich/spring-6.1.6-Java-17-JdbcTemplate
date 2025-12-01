@@ -3,6 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import styles from './LoginLogup.module.css';
 
+type LoginResponse = {
+    token?: string;
+    username?: string;
+}
+
 export const LoginForm: React.FC = () => {
     const [form, setForm] = React.useState({ username: '', password: '' });
     const [loading, setLoading] = React.useState(false);
@@ -16,6 +21,16 @@ export const LoginForm: React.FC = () => {
 
     const BASE_URL = 'http://localhost:8080/sm-system';
 
+    function deriveUsernameFromToken(token: string, explicit?: string): string {
+        if (explicit) return explicit;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.username || payload.sub || 'User';
+        } catch {
+            return 'User';
+        }
+    }
+
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
@@ -23,21 +38,30 @@ export const LoginForm: React.FC = () => {
         setSuccess(false);
         try {
             const result = await login(form);
-            if (result.token) {
-                localStorage.setItem('authToken', result.token);
-                setSuccess(true);
-                setForm({ username: '', password: '' });
-
-                // Fetch students data after login
-                const studentListResponse = await fetch(`${BASE_URL}/students`, {
-                    headers: {
-                        'Authorization': `Bearer ${result.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await studentListResponse.json();
-                navigate('/students', { state: { studentsData: data } });
+            if (!result.token) {
+                setError('Invalid login response');
+                return '';
             }
+            localStorage.setItem('authToken', result.token);
+            const name = deriveUsernameFromToken(result.token, result.username);
+            localStorage.setItem('username', name);
+            setSuccess(true);
+            setForm({ username: '', password: '' });
+
+            // Fetch students data after login
+            const studentListResponse = await fetch(`${BASE_URL}/students`, {
+                headers: {
+                    'Authorization': `Bearer ${result.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!studentListResponse.ok) {
+                setError('Failed to load students.');
+                return;
+            }
+            const data = await studentListResponse.json();
+            navigate('/students', { state: { studentsData: data } });
+
         } catch (err: any) {
             setError(err.message || 'Login failed');
         } finally {
